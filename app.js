@@ -16,17 +16,14 @@ form.addEventListener("submit", function (e) {
         return;
     }
 
-    if (!playlists[genre]) {
-        playlists[genre] = {};
+    if (!playlists[name]) {
+        playlists[name] = [];
     }
 
-    if (!playlists[genre][artist]) {
-        playlists[genre][artist] = [];
-    }
-
-    playlists[genre][artist].push({
+    playlists[name].push({
         song: song,
-        playlistName: name
+        artist: artist,
+        genre: genre
     });
 
     renderPlaylists();
@@ -36,22 +33,23 @@ form.addEventListener("submit", function (e) {
 function renderPlaylists() {
     playlistsContainer.innerHTML = '';
 
-    for (let genre in playlists) {
-        for (let artist in playlists[genre]) {
-            playlists[genre][artist].forEach(function (entry) {
-                const playlistSection = document.createElement('div');
-                playlistSection.className = 'playlist-entry';
+    for (let playlistName in playlists) {
+        const playlistSection = document.createElement('div');
+        playlistSection.className = 'playlist-entry';
 
-                const playlistTitle = document.createElement('h3');
-                playlistTitle.textContent = entry.playlistName;
-                playlistSection.appendChild(playlistTitle);
+        const playlistTitle = document.createElement('h3');
+        playlistTitle.textContent = playlistName;
+        playlistSection.appendChild(playlistTitle);
 
-                const songItem = document.createElement('p');
-                songItem.textContent = `${entry.song} (Artist: ${artist}, Genre: ${genre})`;
-                playlistSection.appendChild(songItem);
+        const songList = document.createElement('ul');
 
-                playlistsContainer.appendChild(playlistSection);
-            });
-        }
+        playlists[playlistName].forEach(function (entry) {
+            const songItem = document.createElement('li');
+            songItem.textContent = `${entry.song} (Artist: ${entry.artist}, Genre: ${entry.genre})`;
+            songList.appendChild(songItem);
+        });
+
+        playlistSection.appendChild(songList);
+        playlistsContainer.appendChild(playlistSection);
     }
 }
